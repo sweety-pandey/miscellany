@@ -1,0 +1,714 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Design Editor Layout</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
+        integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <style>
+        /* General Reset */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f6ff;
+            display: flex;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        /* Left Sidebar */
+        .sidebar {
+            width: 80px;
+            background-color: #eaf6ff;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding-top: 20px;
+            border-right: 1px solid #dcdcdc;
+            margin-top: 30px;
+
+
+        }
+
+        .sidebar-item {
+            margin: 15px 0;
+            text-align: center;
+            font-size: 0.9rem;
+            color: #333;
+            cursor: pointer;
+            transition: background 0.3s ease, color 0.3s ease;
+            position: sticky;
+
+
+        }
+
+        .sidebar-item:hover {
+            background-color: #d0ebff;
+            border-radius: 5px;
+            color: #007bff;
+        }
+
+        .sidebar-item i {
+            font-size: 1.2rem;
+            margin-bottom: 5px;
+        }
+
+        /* Top Navigation Bar */
+        .top-bar {
+            position: fixed;
+            top: 0;
+            left: 80px;
+            right: 0;
+            height: 50px;
+            background-color: #007bff;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 20px;
+            color: #fff;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .top-bar .left {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .top-bar .right {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .top-bar button {
+            background-color: #4caf50;
+            color: #fff;
+            border: none;
+            padding: 8px 12px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .top-bar button:hover {
+            background-color: #45a049;
+        }
+
+        #left {
+            font-size: 20px;
+            color: white;
+        }
+
+        /* Main Content Workspace */
+        .workspace {
+            margin-top: 50px;
+            margin-left: 80px;
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .canvas {
+            width: 80%;
+            height: 80%;
+            background-color: #fff;
+            border: 1px solid #070707;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            margin-right: 50px;
+            margin-bottom: 50px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .canvas img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 10px;
+        }
+
+        /* Bottom Toolbar */
+        .bottom-toolbar {
+            position: absolute;
+            bottom: 0;
+            left: 80px;
+            right: 0;
+            height: 40px;
+            background-color: #eaf6ff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-top: 1px solid #dcdcdc;
+        }
+
+        .div-chat {
+            height: 200px;
+            width: 300px;
+            background-color: rgb(255, 255, 255);
+            margin-top: 400px;
+            margin-right: 5px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            text-align: center;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 30);
+            border-radius: 5px;
+        }
+
+        .button-chat {
+            height: 40px;
+            width: 170px;
+            background-color: #4272cb;
+            border-radius: 10px;
+            color: white;
+            font-size: 1.10rem;
+            margin-top: 10px;
+            transition: transform 0.3s ease;
+            margin-top: 20px;
+        }
+
+        .button-chat:hover {
+            transform: scale(1.2);
+        }
+
+
+
+        .chat-container {
+            width: 400px;
+            height: 600px;
+            background-color: #ffffff;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            position: fixed;
+            bottom: -600px;
+            right: 0;
+            transition: bottom 0.3s ease;
+        }
+
+        .chat-container.active {
+            bottom: 0;
+        }
+
+        .chat-header {
+            background-color: #007bff;
+            color: white;
+            text-align: center;
+            padding: 10px;
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+
+        #down {
+            margin-left: 200px;
+        }
+
+        .chat-body {
+            flex: 1;
+            padding: 10px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .chat-message {
+            margin: 5px 0;
+            padding: 10px;
+            border-radius: 10px;
+            max-width: 70%;
+        }
+
+        .chat-message.user {
+            align-self: flex-end;
+            background-color: #d1e7ff;
+        }
+
+        .chat-message.bot {
+            align-self: flex-start;
+            background-color: #f1f1f1;
+        }
+
+        .chat-footer {
+            display: flex;
+            padding: 10px;
+            border-top: 1px solid #ddd;
+        }
+
+        .chat-footer input {
+            flex: 1;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 1rem;
+        }
+
+        .chat-footer button {
+            margin-left: 10px;
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1rem;
+        }
+
+        .chat-footer button:hover {
+            background-color: #0056b3;
+        }
+
+        .design-options {
+            display: none;
+            margin-top: 0px;
+            border: 1px solid #ddd;
+            padding: 10px;
+            border-radius: 5px;
+            background-color: rgb(95, 17, 17);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            margin-left: 150px;
+            position: sticky;
+            overflow-y: auto;
+            max-height: 500px;
+
+        }
+
+        .design-options div {
+            display: inline-block;
+            margin: 10px;
+            width: 152px;
+            height: 102px;
+            background-color: #ddd;
+            border: 1px solid #ddd;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+
+
+        }
+
+        .design-options div.active {
+            left: 20px;
+            margin: 0 50px 0 60px;
+        }
+
+        .design-options div:hover {
+            transform: scale(1.1);
+        }
+
+        img {
+            height: 100px;
+            width: 150px;
+        }
+
+        /* Sidebar  */
+        .sidebar2 {
+            width: 300px;
+            background-color: #0b1d6d;
+            color: white;
+            padding: 20px;
+            position: fixed;
+            left: -300px;
+            top: 0;
+            height: 500px;
+            transition: left 0.3s ease-in-out;
+            overflow-y: auto;
+            z-index: 1000;
+        }
+
+        .sidebar2.active {
+            left: 80px;
+            top: 50px;
+        }
+
+        .sidebar2 h2 {
+            font-size: 1.2rem;
+            margin-bottom: 15px;
+        }
+
+        .sidebar2 .text-option {
+            background-color: #ffffff;
+            color: black;
+            border: 1px solid #ddd;
+            padding: 10px;
+            margin-bottom: 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            text-align: center;
+            transition: background-color 0.3s ease-in-out;
+        }
+
+        .sidebar2 .text-option:hover {
+            background-color: #d0ebff;
+        }
+        .toolbar {
+            margin-top: 20px;
+            background-color: white;
+            color: black;
+            padding: 15px;
+            border-radius: 5px;
+        }
+
+
+
+
+      
+
+        .toolbar label {
+            display: block;
+            font-size: 0.9rem;
+            margin-bottom: 10px;
+        }
+
+        .toolbar input,
+        .toolbar select {
+            width: 100%;
+            margin-bottom: 10px;
+            padding: 5px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+
+        .toolbar input[type="color"] {
+            padding: 0;
+            height: 30px;
+        }
+
+
+        .canvas .text-element {
+            position: absolute;
+            cursor: move;
+            user-select: none;
+        }
+
+
+        .shadow {
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.6);
+        }
+
+        .curve {
+            transform: rotate(10deg);
+        }
+
+        .glitch {
+            color: #00ff00;
+            text-shadow: 1px 1px 2px #ff0000;
+        }
+
+        .neon {
+            color: #0ff;
+            text-shadow: 0 0 5px #0ff, 0 0 10px #0ff, 0 0 20px #00f, 0 0 30px #00f;
+        }
+
+        .background {
+            background-color: #007bff;
+            color: white;
+            padding: 5px 10px;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Left Sidebar -->
+    <div class="sidebar">
+        <div class="sidebar-item">
+            <i class="fa-solid fa-cannabis" onclick="showDesignOptions()"></i>
+            <p>File</p>
+            <!-- Design Options -->
+            <div class="design-options" id="designOptions">
+
+                <div> <img src="./p3.webp" alt="img" onclick="selectDesign('./p3.webp')"></div>
+                <div> <img src="./p1.webp" alt="img" onclick="selectDesign('./p1.webp')"></div>
+                <div><img src="./p2.webp" alt="img" onclick="selectDesign('./p2.webp')"></div>
+                <div><img src="./p4.webp" alt="img" onclick="selectDesign('./p4.webp')"></div>
+                <div><img src="./p5.webp" alt="img" onclick="selectDesign('./p5.webp')"></div>
+                <div><img src="./p6.webp" alt="img" onclick="selectDesign('./p6.webp')"></div>
+                <div><img src="./p7.webp" alt="img" onclick="selectDesign('./p7.webp')"></div>
+
+            </div>
+        </div>
+
+        <div class="sidebar-item">
+            <i class="fas fa-pencil-alt"></i>
+            <p>Elements</p>
+        </div>
+        <div class="sidebar-item">
+            <i class="fas fa-font" onclick="toggleSidebar()"></i>
+            <p>Text</p>
+            <!-- Sidebar -->
+            <div class="sidebar2" id="textSidebar">
+                <h2>Add Text</h2>
+        <div class="text-option" onclick="addText('Heading', '2rem')">Add Heading</div>
+        <div class="text-option" onclick="addText('Subheading', '1.5rem')">Add Subheading</div>
+        <div class="text-option" onclick="addText('Body Text', '1rem')">Add Body Text</div>
+        <h2>Text Effects</h2>
+        <div class="text-option" onclick="applyEffect('shadow')">Shadow</div>
+        <div class="text-option" onclick="applyEffect('curve')">Curve</div>
+        <div class="text-option" onclick="applyEffect('glitch')">Glitch</div>
+        <div class="text-option" onclick="applyEffect('neon')">Neon</div>
+        <div class="text-option" onclick="applyEffect('background')">Background</div>
+        <h2>Toolbar</h2>
+        <div class="toolbar">
+            <label for="fontSize">Font Size:</label>
+            <input type="range" id="fontSize" min="10" max="100" value="16" onchange="adjustFontSize(this.value)">
+            <label for="fontColor">Font Color:</label>
+            <input type="color" id="fontColor" onchange="adjustFontColor(this.value)">
+            <label for="alignment">Alignment:</label>
+            <select id="alignment" onchange="adjustAlignment(this.value)">
+                <option value="left">Left</option>
+                <option value="center">Center</option>
+                <option value="right">Right</option>
+            </select>
+                </div>
+            </div>
+        </div>
+        <div class="sidebar-item">
+            <i class="fas fa-palette"></i>
+            <p>Brand</p>
+        </div>
+        <div class="sidebar-item">
+            <i class="fas fa-upload"></i>
+            <p>Uploads</p>
+        </div>
+        <div class="sidebar-item">
+            <i class="fas fa-wrench"></i>
+            <p>Tools</p>
+        </div>
+    </div>
+
+    <!-- Top Navigation Bar -->
+    <div class="top-bar">
+        <a href="./task5.html"> <i class="fa-solid fa-arrow-left" id="left"></i></a>
+        <div class="left">
+            <p>Editing</p>
+            <p>Untitled Design - Website</p>
+        </div>
+        <div class="right">
+            <button>Publish Website</button>
+            <button>Share</button>
+        </div>
+    </div>
+
+    <!-- Main Content Workspace -->
+    <div class="workspace">
+        <div class="canvas" id="bigScreen"></div>
+        <div class="div-chat">
+            <h4>Miscellany Chatbot</h4>
+            <p style="margin-top: 10px;">For all inquiries pertaining to this website, please consult our Miscellany
+                Chatbot,
+                designed to provide comprehensive and immediate assistance</p>
+            <button class="button-chat" onclick="toggleMenu()">chat</button>
+        </div>
+        <div class="chat-container">
+            <div class="chat-header">Chatbot AI
+                <i class="fa-solid fa-down-long" id="down"></i>
+            </div>
+            <div class="chat-body" id="chatBody"></div>
+            <div class="chat-footer">
+                <input type="text" id="userInput" placeholder="Type your question..." />
+                <button onclick="sendMessage()">Send</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const responses = {
+            "hello": "Hi there! How can I assist you today?",
+            "how are you?": "I'm just a bot, but I'm here to help you!",
+            "what is your name?": "I am Chatbot AI, your assistant.",
+            "bye": "Goodbye! Have a great day!",
+        };
+
+        function sendMessage() {
+            const userInput = document.getElementById("userInput").value.trim().toLowerCase();
+            const chatBody = document.getElementById("chatBody");
+
+            if (userInput === "") return;
+
+            // Display user message
+            const userMessage = document.createElement("div");
+            userMessage.className = "chat-message user";
+            userMessage.textContent = userInput;
+            chatBody.appendChild(userMessage);
+
+            // Get bot response
+            const botResponse = responses[userInput] || "I'm sorry, I don't understand that question."
+            "how can i help you?";
+
+            // Display bot response
+            const botMessage = document.createElement("div");
+            botMessage.className = "chat-message bot";
+            botMessage.textContent = botResponse;
+            chatBody.appendChild(botMessage);
+
+            // Clear input field
+            document.getElementById("userInput").value = "";
+
+            // Scroll to the bottom of chat
+            chatBody.scrollTop = chatBody.scrollHeight;
+        }
+        function toggleMenu() {
+            const chatContainer = document.querySelector('.chat-container');
+            chatContainer.classList.toggle('active');
+        }
+        // Add event listener for the #down icon
+        const downButton = document.getElementById("down");
+        downButton.addEventListener("click", () => {
+            const chatContainer = document.querySelector('.chat-container');
+            chatContainer.classList.remove('active'); // Ensure the chat slides down
+        });
+        // Function to show design options
+        function showDesignOptions() {
+            const designOptions = document.getElementById('designOptions');
+            designOptions.style.display = designOptions.style.display === 'block' ? 'none' : 'block';
+        }
+        // Function to select and display the design
+        function selectDesign(imgSrc) {
+            const bigScreen = document.getElementById('bigScreen');
+            bigScreen.innerHTML = `<img src="${imgSrc}" alt="Selected Design">`;
+            document.getElementById('designOptions').style.display = 'none';
+        }
+
+        // Add taxt on the canvas
+
+        let selectedElement = null;
+
+        function toggleSidebar() {
+            const sidebar = document.getElementById("textSidebar");
+            sidebar.classList.toggle("active");
+        }
+
+        function addText(content, fontSize) {
+            const canvas = document.getElementById("bigScreen");
+            const textElement = document.createElement("div");
+            textElement.className = "text-element";
+            textElement.contentEditable = true;
+            textElement.textContent = content;
+            textElement.style.fontSize = fontSize;
+            textElement.style.left = "50px";
+            textElement.style.top = "50px";
+            textElement.style.position = "absolute";
+
+            textElement.addEventListener("click", () => {
+                selectedElement = textElement;
+            });
+
+            textElement.setAttribute("draggable", true);
+            textElement.addEventListener("dragstart", dragStart);
+            textElement.addEventListener("dragend", dragEnd);
+
+            canvas.appendChild(textElement);
+        }
+
+        function dragStart(e) {
+            e.dataTransfer.setData("text/plain", null);
+            e.target.style.opacity = 0.5;
+        }
+
+        function dragEnd(e) {
+            e.target.style.opacity = 1;
+            const rect = e.target.parentElement.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+            e.target.style.left = `${x}px`;
+            e.target.style.top = `${y}px`;
+        }
+
+        function applyEffect(effect) {
+            if (selectedElement) {
+                selectedElement.className = `text-element ${effect}`;
+            } else {
+                alert("Please select a text element to apply the effect.");
+            }
+        }
+
+        function adjustFontSize(size) {
+            if (selectedElement) {
+                selectedElement.style.fontSize = `${size}px`;
+            }
+        }
+
+        function adjustFontColor(color) {
+            if (selectedElement) {
+                selectedElement.style.color = color;
+            }
+        }
+
+        function adjustAlignment(alignment) {
+            if (selectedElement) {
+                selectedElement.style.textAlign = alignment;
+                selectedElement.style.width = "100%";
+            }
+        }
+
+
+
+
+
+
+
+        // Allow dropping on the canvas
+        document.getElementById("bigScreen").addEventListener("dragover", function (e) {
+            e.preventDefault();
+        });
+        // dragging the element 
+        const draggableElement = document.getElementsByClassName("text-option"); tex
+
+        let offsetX = 0;
+        let offsetY = 0;
+        let isDragging = false;
+
+        // Mouse down event to start dragging
+        draggableElement.addEventListener("mousedown", (e) => {
+            isDragging = true;
+
+            // Calculate the offset between the cursor and the top-left corner of the element
+            offsetX = e.clientX - draggableElement.getBoundingClientRect().left;
+            offsetY = e.clientY - draggableElement.getBoundingClientRect().top;
+
+            // Change the cursor style to indicate dragging
+            draggableElement.style.cursor = "grabbing";
+        });
+
+        // Mouse move event to move the element
+        document.addEventListener("mousemove", (e) => {
+            if (!isDragging) return;
+
+            // Calculate the new position of the element
+            const left = e.clientX - offsetX;
+            const top = e.clientY - offsetY;
+
+            // Update the position of the element
+            draggableElement.style.left = `${left}px`;
+            draggableElement.style.top = `${top}px`;
+        });
+
+        // Mouse up event to stop dragging
+        document.addEventListener("mouseup", () => {
+            isDragging = false;
+
+            // Reset the cursor style
+            draggableElement.style.cursor = "grab";
+        });
+
+
+    </script>
+
+
+
+</body>
+
+</html>
